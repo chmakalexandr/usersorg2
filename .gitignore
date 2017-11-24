@@ -24,4 +24,7 @@
 phpunit.xml.dist
 yarn.lock
 yarn-error.log
-webpack.config.js
+/assets/fonts/*
+/assets/dist/fonts/*
+assets/dist/bootstrap/*
+assets/images/*

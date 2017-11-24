@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class UserType extends AbstractType
 {
@@ -15,13 +16,13 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add('lastname','text', array('label' => 'Last Name',));
-        $builder->add('firstname','text', array('label' => 'First Name',));
-        $builder->add('middlename','text', array('label' => 'Middle Name',));
+        $builder->add('lastname',TextType::class, array('label' => 'Last Name','attr'=> array('class'=>'form-control')));
+        $builder->add('firstname',TextType::class, array('label' => 'First Name','attr'=> array('class'=>'form-control')));
+        $builder->add('middlename',TextType::class, array('label' => 'Middle Name','attr'=> array('class'=>'form-control')));
         $builder->add('bithday', DateType::class, array('label' => 'Bithday(YYYY-MM-DD)',
-            'widget' => 'single_text','format' => 'yyyy-mm-dd','attr'=> array('class'=>'input-group date')));
-        $builder->add('inn','text',array('label' => 'ITN (12 digits)',));
-        $builder->add('snils', 'text',array('label' => 'INILA (11 digits)',));
+            'widget' => 'single_text','format' => 'yyyy-mm-dd','attr'=> array('class'=>'input-group date form-control')));
+        $builder->add('inn',TextType::class, array('label' => 'ITN (12 digits)','attr'=> array('class'=>'form-control')));
+        $builder->add('snils', TextType::class, array('label' => 'INILA (11 digits)','attr'=> array('class'=>'form-control')));
     }
 
     /**

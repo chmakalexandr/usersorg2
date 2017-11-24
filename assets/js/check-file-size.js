@@ -1,4 +1,5 @@
 /*Check file size*/
+module.exports = function(){
 $('#up_submit').click( function() {
     //check whether browser fully supports all File API
     if (window.File && window.FileReader && window.FileList && window.Blob)
@@ -24,3 +25,4 @@ $('#up_submit').click( function() {
     }
     return true;
 });
+};

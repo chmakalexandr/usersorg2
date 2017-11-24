@@ -1,10 +1,8 @@
 {% extends 'IntexOrgBundle::layout.html.twig' %}
-{% block firstjavascripts %}
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/moment.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap-datepicker.min.js') }}"></script>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/form_style.css') }}">
 {% endblock %}
-
 {% block namepage %}
     <h3>
         {% trans %} Add user to organization {% endtrans %}
@@ -13,6 +11,11 @@
 {% endblock %}
 
 {% block body %}
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="{{ asset('build/form.js') }}"></script>
+    {% endblock %}
+
     {{ form_start(form, { 'action': path('intex_org_user_create',{'companyId':company.id}), 'method': 'POST', 'attr': {'class': 'userform'} }) }}
     {{ form_widget(form) }}
     <p>

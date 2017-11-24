@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Intex\OrgBundle\Entity\User;
 use Intex\OrgBundle\Entity\Company;
 use Intex\OrgBundle\Form\UserType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Exception;
 
 /**
@@ -182,7 +183,7 @@ class UserController extends Controller
     public function uploadXmlAction()
     {
         $form = $this->createFormBuilder()
-            ->add('file','file',array('label' => $this->get('translator')->trans('Load XML file'),
+            ->add('file',FileType::class, array('label' => $this->get('translator')->trans('Load XML file'),
                 "attr" => array("accept" => ".xml",)))
             ->getForm();
         return $this->render('IntexOrgBundle:User:upload.html.twig', array(
