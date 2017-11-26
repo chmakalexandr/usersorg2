@@ -19,22 +19,23 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getNewUsers(ArrayCollection $users)
     {
-        $usersInns = array();
-        foreach ($users as $human){
-            $usersInns[] = $human->getInn();
-        }
+        $usersInns = $this->getInn($users);
 
         $db = $this->createQueryBuilder('u')
-            ->select('u.inn')
+            ->select('u')
             ->where('u.inn IN (:inns)')
             ->setParameter('inns', $usersInns);
-        $getExistingInn = $db->getQuery()->getResult();
+        $existingUsers = $db->getQuery()->getResult();
 
-        foreach ($getExistingInn as $inn){
-            $inns[] = $inn['inn'];
-        }
+        return $this->getDiffUsers($users, $existingUsers);
+    }
 
-        $newInns = array_diff($usersInns, $inns);
+    protected function getDiffUsers($users, $existingUsers)
+    {
+        $usersInns = $this->getInn($users);
+        $existingInns = $this->getInn($existingUsers);
+
+        $newInns = array_diff($usersInns, $existingInns);
         $newUsers = new ArrayCollection();
         if ($newInns) {
             foreach ($users as $human) {
@@ -43,7 +44,15 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 }
             }
         }
-
         return $newUsers;
+    }
+
+    protected function getInn($users)
+    {
+        foreach ($users as $human){
+            $usersInns[] = $human->getInn();
+        }
+
+        return $usersInns;
     }
 }

@@ -13,12 +13,14 @@ Encore
 
     .addEntry('form', './assets/form.js')
 
-    /*.addEntry('file_size', './assets/js/check-file-size.js')*/
+    .addEntry('check-file-size', './assets/js/check-file-size.js')
 
     /* Добавим наш главный файл ресурсов в сборку */
     .addStyleEntry('styles', './assets/app.scss')
 
-    .addStyleEntry('form_style', './assets/dist/bootstrap/bootstrap-datepicker.css')
+    .addStyleEntry('form_style', './assets/dist/bootstrap/bootstrap-datepicker/css/bootstrap-datepicker.css')
+
+    .addStyleEntry('main_page', './assets/css/main_page.css')
 
     /* Включим поддержку sass/scss файлов */
     .enableSassLoader()
@@ -27,5 +29,4 @@ Encore
     /* В режиме разработки будем генерировать карту ресурсов */
     .enableSourceMaps(!Encore.isProduction());
 
-/* Экспортируем финальную конфигурацию */
 module.exports = Encore.getWebpackConfig();

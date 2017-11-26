@@ -17,12 +17,12 @@ body { line-height: 1;font-family: Arial, sans-serif;font-size: 12px; width: 100
 #header ul.navigation { list-style: none; text-align: right; }
 #header .navigation li { display: inline }
 #header .navigation li a { display: inline-block; padding: 10px 15px; border-left: 1px solid #ccc; }
-#header h2 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 42px; text-align: center; line-height: 70px; position: relative; top: -10px;}
+#header h2 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 42px; text-align: center; position: relative; top: -10px; margin-top: 0;}
 #header h2 a { color: #4b7492; }
 #header h3 { text-align: center; font-family: 'La Belle Aurore', cursive; font-size: 32px; margin-bottom: 20px; font-weight: normal; color: #000000; }
 h3{font-size: 24px;}
-.main-col { width: 75%; display: inline-block; float: left; padding: 20px; margin-bottom: 20px; }
-.sidebar { width: 25%; ; display: inline-block; border-left: 1px solid #ccc;}
+.main-col { width: 75%; display: inline-block; float: left; padding: 20px; margin-bottom: 20px; border-right: 1px solid #ccc}
+.sidebar { width: 25%; ; display: inline-block;}
 
 .main-col a { color: #F48A00; }
 .main-col h1,
@@ -63,15 +63,16 @@ h3{font-size: 24px;}
     cursor: default;
 }
 .table-striped > tbody > tr:nth-of-type(2n+1){
-    background-color: #f3e6ac;
+    background-color: #f3e6ac !important;
 }
-.table-hover>tbody>tr:hover{background-color:#dfc551}
+.table-hover>tbody>tr:hover{
+    background-color:#dfc551 !important;
+}
 .name-col{
     background-color: #fcf6da;
 }
 .sidebar li{
     border-bottom: 1px solid #ccc;
-    margin: 0 10px;
 }
 .nav-stacked > li + li{
     margin-left: 10px;

@@ -11,10 +11,7 @@
 {% endblock %}
 
 {% block body %}
-    {% block javascripts %}
-        {{ parent() }}
-        <script src="{{ asset('build/form.js') }}"></script>
-    {% endblock %}
+    <script src="{{ asset('build/form.js') }}"></script>
 
     {{ form_start(form, { 'action': path('intex_org_user_create',{'companyId':company.id}), 'method': 'POST', 'attr': {'class': 'userform'} }) }}
     {{ form_widget(form) }}
@@ -23,12 +20,6 @@
     </p>
 
     <script type="text/javascript">
-        $("#intex_orgbundle_usertype_bithday").datepicker({format: "yyyy-mm-dd", startView: 1});
+        $("#intex_orgbundle_usertype_bithday").datepicker({});
     </script>
 {% endblock %}
-
-
-
-
-
-

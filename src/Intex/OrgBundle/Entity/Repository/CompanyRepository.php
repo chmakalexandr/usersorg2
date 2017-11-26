@@ -32,10 +32,7 @@ class CompanyRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getExistingCompanies(ArrayCollection $companies)
     {
-        $companiesOgrns = array();
-        foreach ($companies as $organization){
-            $companiesOgrns[] = $organization->getOgrn();
-        }
+        $companiesOgrns = $this->getOgrns($companies);
 
         $db = $this->createQueryBuilder('c')
             ->select('c')
@@ -43,5 +40,14 @@ class CompanyRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('ogrns', $companiesOgrns);
 
         return $db->getQuery()->getResult();
+    }
+
+    public function getOgrns($companies)
+    {
+        $ogrns = array();
+        foreach ($companies as $organization){
+            $ogrns[] = $organization->getOgrn();
+        }
+        return $ogrns;
     }
 }

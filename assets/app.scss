@@ -1,3 +1,4 @@
 @import "../assets/dist/fontawesome/css/font-awesome.css";
-@import "../assets/dist/bootstrap/bootstrap.min.css";
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+@import '~bootstrap-sass/assets/stylesheets/bootstrap';
 @import "../assets/css/style.css";

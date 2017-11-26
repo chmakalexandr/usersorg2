@@ -1,4 +1,3 @@
-var $ = require('./dist/jquery/jquery.min');
-global.$ = global.jQuery = $;
+var $ = require('jquery');
 require('./dist/bootstrap/js/bootstrap.min');
-require('./js/check-file-size');
+

@@ -28,3 +28,4 @@ yarn-error.log
 /assets/dist/fonts/*
 assets/dist/bootstrap/*
 assets/images/*
+assets/js/*

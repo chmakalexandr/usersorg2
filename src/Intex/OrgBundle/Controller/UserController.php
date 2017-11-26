@@ -60,23 +60,23 @@ class UserController extends Controller
     public function listOrgUsersAction($companyId)
     {
         $company = $this->getCompany($companyId);
-        $users=$company->getUsers();
+        $users = $company->getUsers();
 
         if (!$company) {
             throw $this->createNotFoundException('Unable to find company.');
         }
 
         return $this->render('IntexOrgBundle:User:users.html.twig', array(
-            'company'  => $company,
-            'users'  => $users
+            'company' => $company,
+            'users' => $users
         ));
     }
 
     /**
-    * Renders form for add user to company
-    * @param int $companyId organization's Id
-    * @return \Symfony\Component\HttpFoundation\Response
-    */
+     * Renders form for add user to company
+     * @param int $companyId organization's Id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function newUserAction($companyId)
     {
         $company = $this->getCompany($companyId);
@@ -88,7 +88,7 @@ class UserController extends Controller
         $form = $this->createForm(UserType::class, $user);
         return $this->render('IntexOrgBundle:User:form.html.twig', array(
             'company' => $company,
-            'form'   => $form->createView()
+            'form' => $form->createView()
         ));
     }
 
@@ -108,13 +108,13 @@ class UserController extends Controller
         $user->setCompany($company);
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-        if ($form->isValid()&&$form->isSubmitted()) {
+        if ($form->isValid() && $form->isSubmitted()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            $this->addFlash('success',$this->get('translator')->trans('User was be added!'));
+            $this->addFlash('success', $this->get('translator')->trans('User was be added!'));
             $users = $company->getUsers();
-            return $this->redirect($this->generateUrl('intex_org_company_users',array('companyId'=>$companyId,'company'=>$company,'users'=>$users)));
+            return $this->redirect($this->generateUrl('intex_org_company_users', array('companyId' => $companyId, 'company' => $company, 'users' => $users)));
         }
         return $this->render('IntexOrgBundle:User:form.html.twig', array(
             'company' => $company,
@@ -130,19 +130,12 @@ class UserController extends Controller
     public function loadUsersAction(Request $request)
     {
         try {
-            $xmlFile = $request->files->get('form');
-            $xmlData = file_get_contents($xmlFile['file']->getRealPath());
-
-            $data = $this->get('jms_serializer')->deserialize($xmlData, 'Intex\OrgBundle\Entity\Organizations', 'xml');
-            $companies = $data->getCompanies();
             $em = $this->getDoctrine()->getManager();
 
-            $existingCompanies = $em->getRepository('Intex\OrgBundle\Entity\Company')->getExistingCompanies($companies);
+            $companies = $this->getCompaniesFromXml($request);
 
-            $existingOgrns = array();
-            foreach ($existingCompanies as $organization){
-                $existingOgrns[] = $organization->getOgrn();
-            }
+            $existingCompanies = $em->getRepository('Intex\OrgBundle\Entity\Company')->getExistingCompanies($companies);
+            $existingOgrns = $em->getRepository('Intex\OrgBundle\Entity\Company')->getOgrns($existingCompanies);
 
             foreach ($companies as $organization) {
                 if (!in_array($organization->getOgrn(), $existingOgrns)) {
@@ -157,19 +150,19 @@ class UserController extends Controller
 
                 $users = $organization->getUsers();
                 $newUsers = $em->getRepository('Intex\OrgBundle\Entity\User')->getNewUsers($users);
-                if (empty($newUsers)){
+                if (empty($newUsers)) {
                     foreach ($newUsers as $user) {
                         $user->setCompany($company);
                         $em->persist($user);
                     }
                 } else {
-                    $this->addFlash('warning',$this->get('translator')->trans('All uploadable users are present in DB'));
+                    $this->addFlash('warning', $this->get('translator')->trans('All uploadable users are present in DB'));
                     return $this->redirect($this->generateUrl('intex_org_user_upload'));
                 }
             }
             $em->flush();
         } catch (Exception $e) {
-            $this->addFlash('error',$this->get('translator')->trans('Unnable add users in Db. Check XML file.'));
+            $this->addFlash('error', $this->get('translator')->trans('Unnable add users in Db. Check XML file.'));
             return $this->redirect($this->generateUrl('intex_org_user_upload'));
         }
         $this->addFlash('success', $this->get('translator')->trans('Users successfully loaded'));
@@ -183,7 +176,7 @@ class UserController extends Controller
     public function uploadXmlAction()
     {
         $form = $this->createFormBuilder()
-            ->add('file',FileType::class, array('label' => $this->get('translator')->trans('Load XML file'),
+            ->add('file', FileType::class, array('label' => $this->get('translator')->trans('Load XML file'),
                 "attr" => array("accept" => ".xml",)))
             ->getForm();
         return $this->render('IntexOrgBundle:User:upload.html.twig', array(
@@ -214,12 +207,23 @@ class UserController extends Controller
      */
     protected function getCompanyByOgrn($ogrn, $companies)
     {
-        $organization = null;
-        foreach ($companies as $company){
-            if ($company->getOgrn() == $ogrn){
-                return $organization = $company;
+        foreach ($companies as $company) {
+            if ($company->getOgrn() == $ogrn) {
+                return $company;
             }
         }
-        return $organization;
+        return null;
+    }
+
+    protected function getCompaniesFromXml(Request $request)
+    {
+        try {
+            $xmlFile = $request->files->get('form');
+            $xmlData = file_get_contents($xmlFile['file']->getRealPath());
+            $data = $this->get('jms_serializer')->deserialize($xmlData, 'Intex\OrgBundle\Entity\Organizations', 'xml');
+            return $data->getCompanies();
+        } catch (Exception $e) {
+            throw new Exception($this->get('translator')->trans('Unnable add users in Db. Check XML file.'));
+        }
     }
 }
