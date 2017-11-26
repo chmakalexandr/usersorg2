@@ -1,5 +1,6 @@
 /*Check file size*/
 var $ = require('jquery');
+
 $(document).ready(function() {
     $('#up_submit').click( function() {
         //check whether browser fully supports all File API
