@@ -83,9 +83,11 @@ class UserController extends Controller
         if (!$company) {
             throw $this->createNotFoundException('Unable to find company.');
         }
+
         $user = new User();
         $user->setCompany($company);
         $form = $this->createForm(UserType::class, $user);
+
         return $this->render('IntexOrgBundle:User:form.html.twig', array(
             'company' => $company,
             'form' => $form->createView()
@@ -104,10 +106,12 @@ class UserController extends Controller
         if (!$company) {
             throw $this->createNotFoundException('Unable to find company.');
         }
+
         $user = new User();
         $user->setCompany($company);
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
+
         if ($form->isValid() && $form->isSubmitted()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -116,6 +120,7 @@ class UserController extends Controller
             $users = $company->getUsers();
             return $this->redirect($this->generateUrl('intex_org_company_users', array('companyId' => $companyId, 'company' => $company, 'users' => $users)));
         }
+
         return $this->render('IntexOrgBundle:User:form.html.twig', array(
             'company' => $company,
             'form' => $form->createView()
@@ -133,7 +138,6 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $companies = $this->getCompaniesFromXml($request);
-
             $existingCompanies = $em->getRepository('Intex\OrgBundle\Entity\Company')->getExistingCompanies($companies);
             $existingOgrns = $em->getRepository('Intex\OrgBundle\Entity\Company')->getOgrns($existingCompanies);
 
@@ -179,6 +183,7 @@ class UserController extends Controller
             ->add('file', FileType::class, array('label' => $this->get('translator')->trans('Load XML file'),
                 "attr" => array("accept" => ".xml",)))
             ->getForm();
+
         return $this->render('IntexOrgBundle:User:upload.html.twig', array(
             'form' => $form->createView()
         ));

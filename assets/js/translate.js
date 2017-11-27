@@ -1,7 +1,15 @@
+    var local = {};
+    local.en = require('./locale/locale.en_EN');
+    local.ru = require('./locale/locale.ru_RU');
+
+    var messages = {};
+    messages.ru_RU = local.ru.messages;
+    messages.en_US = local.en.messages;
+
     if (typeof settings !== 'object') {
         var settings = {};
     }
-// Default language
+    // Default language
     settings.lang = 'en_US';
 
     function tr(params, lang) {
@@ -20,4 +28,8 @@
             }
         }
         return translated;
+    };
+
+    module.exports = {
+        trans: tr
     };

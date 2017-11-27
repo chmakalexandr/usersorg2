@@ -1,4 +1,4 @@
-var messages = { ru_RU: {} };
+var messages = { ru_RU: {}};
 
 messages.ru_RU.error = {
     comment: {
@@ -7,4 +7,7 @@ messages.ru_RU.error = {
         blank: 'Пустой файл!',
         upgrade: 'Обновите браузер, потому что вашему текущему браузеру не хватает новых функций!'
     }
+};
+module.exports = {
+    messages: messages.ru_RU
 };

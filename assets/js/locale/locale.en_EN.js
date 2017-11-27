@@ -1,4 +1,4 @@
-var messages = { en_EN: {} };
+var messages = { en_US: {}};
 
 messages.en_US.error = {
     comment: {
@@ -9,3 +9,6 @@ messages.en_US.error = {
     }
 }
 
+module.exports = {
+    messages: messages.en_US
+};

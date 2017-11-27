@@ -30,6 +30,12 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         return $this->getDiffUsers($users, $existingUsers);
     }
 
+    /**
+     * Return users from array $users which do not exist in array $existingUsers
+     * @param ArrayCollection $users
+     * @param ArrayCollection $existingUsers
+     * @return array|ArrayCollection
+     */
     protected function getDiffUsers($users, $existingUsers)
     {
         $usersInns = $this->getInn($users);
@@ -47,6 +53,11 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         return $newUsers;
     }
 
+    /**
+     * Return INN(Insurance Number of Individual Ledger Account user's) users from array $users
+     * @param ArrayCollection $users
+     * @return array
+     */
     protected function getInn($users)
     {
         foreach ($users as $human){

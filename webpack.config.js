@@ -13,7 +13,7 @@ Encore
 
     .addEntry('form', './assets/form.js')
 
-    .addEntry('check-file-size', './assets/js/check-file-size.js')
+    .addEntry('check', './assets/check-file.js')
 
     /* Добавим наш главный файл ресурсов в сборку */
     .addStyleEntry('styles', './assets/app.scss')
