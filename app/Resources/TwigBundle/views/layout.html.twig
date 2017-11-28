@@ -1,0 +1,8 @@
+{% extends '@IntexOrg/layout.html.twig' %}
+
+{% block languages %}
+    <span><a href="{{ path('intex_org_homepage', {'_locale': 'ru' }) }}">RU</a></span>&nbsp|
+    <span><a href="{{ path('intex_org_homepage', {'_locale': 'en' }) }}">EN</a></span>
+{% endblock %}
+
+

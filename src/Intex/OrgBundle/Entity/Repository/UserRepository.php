@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
-     * Return users from array $users that exist in DB
+     * Return users from array $users that not exist in DB
      * @param ArrayCollection $users
      * @return ArrayCollection
      */
@@ -25,24 +25,25 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->select('u')
             ->where('u.inn IN (:inns)')
             ->setParameter('inns', $usersInns);
+
         $existingUsers = $db->getQuery()->getResult();
 
-        return $this->getDiffUsers($users, $existingUsers);
+        return $this->getDiffArraysUsers($users, $existingUsers);
     }
 
     /**
      * Return users from array $users which do not exist in array $existingUsers
      * @param ArrayCollection $users
      * @param ArrayCollection $existingUsers
-     * @return array|ArrayCollection
+     * @return array
      */
-    protected function getDiffUsers($users, $existingUsers)
+    protected function getDiffArraysUsers($users, $existingUsers)
     {
         $usersInns = $this->getInn($users);
         $existingInns = $this->getInn($existingUsers);
 
         $newInns = array_diff($usersInns, $existingInns);
-        $newUsers = new ArrayCollection();
+
         if ($newInns) {
             foreach ($users as $human) {
                 if (in_array($human->getInn(), $newInns)){
@@ -50,6 +51,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
                 }
             }
         }
+
         return $newUsers;
     }
 

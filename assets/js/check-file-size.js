@@ -1,13 +1,12 @@
 /*Check file size*/
 const MAX_FILE_SIZE = 2097152; //2mb
 
-var $ = require('jquery');
 var tr = require('./translate.js');
 
 var str = location.href;
-var locale = 'en_US';
+var locale = 'en_US'; //location
 if (str.match('\\/ru\\/')){
-    locale = 'ru_RU'; //get location
+    locale = 'ru_RU';
 }
 
 $(document).ready(function() {
@@ -17,22 +16,25 @@ $(document).ready(function() {
         {
             //get the file size and file type from file input field
             var fsize = $('#form_file')[0].files[0].size;
-            if(fsize > MAX_FILE_SIZE) //do something if file size more than MAX_FILE_SIZE (1048576 = 1mb)
+            if(fsize > MAX_FILE_SIZE) //do something if file size more than MAX_FILE_SIZE
             {
-               alert((fsize/1048576).toFixed(1) + tr.trans('error:comment:toobig', locale)+" "+(MAX_FILE_SIZE/1048576).toFixed(1)+" Mb");
+               //1mb = 1048576
+               alert((fsize/1048576).toFixed(1) + tr.trans('error:file:toobig', locale)+" "+(MAX_FILE_SIZE/1048576).toFixed(1)+" Mb");
                return false;
             } else if (fsize == 0){
-                alert(tr.trans('error:comment:blank', locale));
+                alert(tr.trans('error:file:blank', locale));
                 return false;
             }
+
+            //check file extension
             var file_name = $('#form_file')[0].files[0].name;
             var file_type = file_name.split('.').pop().toLowerCase();
             if(file_type != "xml"){
-                alert(tr.trans('error:comment:xmlfile', locale));
+                alert(tr.trans('error:file:xmlfile', locale));
                 return false;
             }
-        }else{
-            alert(tr.trans('error:comment:upgrade', 'ru_RU'));
+        } else {
+            alert(tr.trans('error:file:upgrade', locale));
         }
         return true;
     });

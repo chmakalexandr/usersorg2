@@ -1,7 +1,7 @@
-{% extends '::base.html.twig' %}
+{% extends 'TwigBundle::layout.html.twig' %}
 
 {% block body %}
     <h1>An Error Occurred</h1>
     <h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
-    <p><a href="{{ path('intex_org_homepage') }}">Вернитесь на домашнюю сраницу</a></p>
+    <p><a href="{{ path('intex_org_homepage') }}">{% trans %}Return to the home page{% endtrans %}</a></p>
 {% endblock %}

@@ -25,6 +25,7 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()
             ->getManager();
+
         $users = $em->getRepository('IntexOrgBundle:User')
             ->findAll();
 
@@ -80,6 +81,7 @@ class UserController extends Controller
     public function newUserAction($companyId)
     {
         $company = $this->getCompany($companyId);
+
         if (!$company) {
             throw $this->createNotFoundException('Unable to find company.');
         }
@@ -103,12 +105,14 @@ class UserController extends Controller
     public function createUserAction(Request $request, $companyId)
     {
         $company = $this->getCompany($companyId);
+
         if (!$company) {
             throw $this->createNotFoundException('Unable to find company.');
         }
 
         $user = new User();
         $user->setCompany($company);
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
@@ -117,6 +121,7 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', $this->get('translator')->trans('User was be added!'));
+
             $users = $company->getUsers();
             return $this->redirect($this->generateUrl('intex_org_company_users', array('companyId' => $companyId, 'company' => $company, 'users' => $users)));
         }
@@ -135,6 +140,7 @@ class UserController extends Controller
     public function loadUsersAction(Request $request)
     {
         try {
+            $allUsersPresent = true;
             $em = $this->getDoctrine()->getManager();
 
             $companies = $this->getCompaniesFromXml($request);
@@ -154,14 +160,13 @@ class UserController extends Controller
 
                 $users = $organization->getUsers();
                 $newUsers = $em->getRepository('Intex\OrgBundle\Entity\User')->getNewUsers($users);
-                if (empty($newUsers)) {
+
+                if (!empty($newUsers)) {
                     foreach ($newUsers as $user) {
                         $user->setCompany($company);
                         $em->persist($user);
                     }
-                } else {
-                    $this->addFlash('warning', $this->get('translator')->trans('All uploadable users are present in DB'));
-                    return $this->redirect($this->generateUrl('intex_org_user_upload'));
+                    $allUsersPresent = false;
                 }
             }
             $em->flush();
@@ -169,7 +174,13 @@ class UserController extends Controller
             $this->addFlash('error', $this->get('translator')->trans('Unnable add users in Db. Check XML file.'));
             return $this->redirect($this->generateUrl('intex_org_user_upload'));
         }
-        $this->addFlash('success', $this->get('translator')->trans('Users successfully loaded'));
+
+        if ($allUsersPresent) {
+            $this->addFlash('warning', $this->get('translator')->trans('All uploadable users are present in DB'));
+        } else {
+            $this->addFlash('success', $this->get('translator')->trans('Users successfully loaded'));
+        }
+
         return $this->redirect($this->generateUrl('intex_org_user_upload'));
     }
 
@@ -198,9 +209,11 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $company = $em->getRepository('IntexOrgBundle:Company')->find($companyId);
+
         if (!$company) {
             throw $this->createNotFoundException('Unable to find company.');
         }
+
         return $company;
     }
 
@@ -217,15 +230,25 @@ class UserController extends Controller
                 return $company;
             }
         }
-        return null;
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws Exception
+     */
     protected function getCompaniesFromXml(Request $request)
     {
         try {
             $xmlFile = $request->files->get('form');
+
+            if ($xmlFile['file']->getError()){
+                throw new Exception($this->get('translator')->trans('Error load file. Please check uploaded file.'));
+            }
+
             $xmlData = file_get_contents($xmlFile['file']->getRealPath());
             $data = $this->get('jms_serializer')->deserialize($xmlData, 'Intex\OrgBundle\Entity\Organizations', 'xml');
+
             return $data->getCompanies();
         } catch (Exception $e) {
             throw new Exception($this->get('translator')->trans('Unnable add users in Db. Check XML file.'));

@@ -1,4 +1,4 @@
-{% extends '::base.html.twig' %}
+{% extends 'TwigBundle::layout.html.twig' %}
 
 {% block title %}
     {{ exception.message }} ({{ status_code }} {{ status_text }})
@@ -6,5 +6,5 @@
 
 {% block body %}
     <h3>{{ exception.message }}</h3>
-    <p><a href="{{ path('intex_org_homepage') }}">Вернитесь на домашнюю сраницу</a></p>
+    <p><a href="{{ path('intex_org_homepage') }}">{% trans %}Return to the home page{% endtrans %}</a></p>
 {% endblock %}

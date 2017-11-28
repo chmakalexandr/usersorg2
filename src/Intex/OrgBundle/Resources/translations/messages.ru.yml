@@ -48,3 +48,7 @@ An error occurred: Произошла ошибка
 An exception occurred: Произошло исключение
 Choose organization: Выбрать организацию
 All uploadable users are present in DB : Все загружаемые пользователи присутсвуют в БД.
+Error load file. Please check uploaded file: Ошибка загрузки файла. Проверьте загруженный файл.
+Return to the home page: Вернитесь на домашнюю страницу
+Page not found: Страница не найдена
+The requested page was not found. Check for typos in the URL or: Запрошенная страница не найдена. Проверьте наличие опечаток в URL-адресе или

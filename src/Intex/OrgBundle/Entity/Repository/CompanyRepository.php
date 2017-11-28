@@ -21,8 +21,8 @@ class CompanyRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('c')
             ->select('c')
             ->addOrderBy('c.name', 'ASC');
-        return $qb->getQuery()
-            ->getResult();
+
+        return $qb->getQuery()->getResult();
     }
 
      /**
@@ -44,10 +44,10 @@ class CompanyRepository extends \Doctrine\ORM\EntityRepository
 
     public function getOgrns($companies)
     {
-        $ogrns = array();
         foreach ($companies as $organization){
             $ogrns[] = $organization->getOgrn();
         }
+
         return $ogrns;
     }
 }

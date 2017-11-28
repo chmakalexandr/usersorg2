@@ -2,31 +2,30 @@
 var Encore = require('@symfony/webpack-encore');
 
 Encore
-/* Установим путь куда будет осуществляться сборка */
+    /* path build */
     .setOutputPath('./web/build/')
-    /* Укажем web путь до каталога web/build */
+    /* path web/build */
     .setPublicPath('/build')
-    /* Каждый раз перед сборкой будем очищать каталог /build */
+    /* Clear /build */
     .cleanupOutputBeforeBuild()
-    /* --- Добавим основной JavaScript в сборку --- */
+    /* Main script */
     .addEntry('scripts', './assets/app.js')
-
-    .addEntry('form', './assets/form.js')
-
-    .addEntry('check', './assets/check-file.js')
-
-    /* Добавим наш главный файл ресурсов в сборку */
+    /*Js for Form add user*/
+    .addEntry('form', './assets/js/form.js')
+    /*JS for check uploaded XML-file*/
+    .addEntry('check', './assets/js/check-file-size.js')
+    /* main style css */
     .addStyleEntry('styles', './assets/app.scss')
-
+    /*bootstrap calendar css*/
     .addStyleEntry('form_style', './assets/dist/bootstrap/bootstrap-datepicker/css/bootstrap-datepicker.css')
+    /*additional css for home-page*/
+    .addStyleEntry('home_page', './assets/css/main_page.css')
 
-    .addStyleEntry('main_page', './assets/css/main_page.css')
 
-    /* Включим поддержку sass/scss файлов */
     .enableSassLoader()
     // allow legacy applications to use $/jQuery as a global variable
     .autoProvidejQuery()
-    /* В режиме разработки будем генерировать карту ресурсов */
+
     .enableSourceMaps(!Encore.isProduction());
 
 module.exports = Encore.getWebpackConfig();
