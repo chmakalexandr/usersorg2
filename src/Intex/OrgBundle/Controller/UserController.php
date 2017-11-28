@@ -120,6 +120,7 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
+
             $this->addFlash('success', $this->get('translator')->trans('User was be added!'));
 
             $users = $company->getUsers();
@@ -149,18 +150,13 @@ class UserController extends Controller
 
             foreach ($companies as $organization) {
                 if (!in_array($organization->getOgrn(), $existingOgrns)) {
-                    $company = new Company();
-                    $company->setName($organization->getName());
-                    $company->setOgrn($organization->getOgrn());
-                    $company->setOktmo($organization->getOktmo());
-                    $em->persist($company);
+                    $em->persist($this->createNewCompany($organization));
                 } else {
                     $company = $this->getCompanyByOgrn($organization->getOgrn(), $existingCompanies);
                 }
 
                 $users = $organization->getUsers();
                 $newUsers = $em->getRepository('Intex\OrgBundle\Entity\User')->getNewUsers($users);
-
                 if (!empty($newUsers)) {
                     foreach ($newUsers as $user) {
                         $user->setCompany($company);
@@ -230,6 +226,8 @@ class UserController extends Controller
                 return $company;
             }
         }
+
+        return null;
     }
 
     /**
@@ -242,8 +240,8 @@ class UserController extends Controller
         try {
             $xmlFile = $request->files->get('form');
 
-            if ($xmlFile['file']->getError()){
-                throw new Exception($this->get('translator')->trans('Error load file. Please check uploaded file.'));
+            if ((!$xmlFile)||$xmlFile['file']->getError()){
+                throw new Exception($this->get('translator')->trans('Error load file. Please check uploaded file'));
             }
 
             $xmlData = file_get_contents($xmlFile['file']->getRealPath());
@@ -253,5 +251,14 @@ class UserController extends Controller
         } catch (Exception $e) {
             throw new Exception($this->get('translator')->trans('Unnable add users in Db. Check XML file.'));
         }
+    }
+
+    protected function createNewCompany($organization){
+        $company = new Company();
+        $company->setName($organization->getName());
+        $company->setOgrn($organization->getOgrn());
+        $company->setOktmo($organization->getOktmo());
+
+        return $company;
     }
 }

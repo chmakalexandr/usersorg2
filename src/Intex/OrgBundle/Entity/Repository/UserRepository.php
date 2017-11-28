@@ -62,6 +62,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      */
     protected function getInn($users)
     {
+        $usersInns = array();
         foreach ($users as $human){
             $usersInns[] = $human->getInn();
         }
