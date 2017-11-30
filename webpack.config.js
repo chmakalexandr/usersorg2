@@ -21,7 +21,6 @@ Encore
     /*additional css for home-page*/
     .addStyleEntry('home_page', './assets/css/main_page.css')
 
-
     .enableSassLoader()
     // allow legacy applications to use $/jQuery as a global variable
     .autoProvidejQuery()

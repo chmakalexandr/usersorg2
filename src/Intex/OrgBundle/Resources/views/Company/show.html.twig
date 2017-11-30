@@ -2,11 +2,12 @@
 
 {% block namepage %}
     <h3>
-        {% trans %} Organization's Information:{% endtrans %} <a href="{{  path('intex_org_company_show', { 'companyId': company.id })}}">{{ company.name }}</a>
+        {% trans %} Organization's Information{% endtrans %}: <a href="{{  path('intex_org_company_show', { 'companyId': company.id })}}">{{ company.name }}</a>
     </h3>
 {% endblock %}
 
 {% block body %}
+
     <div class="show_company">
         <table class="table">
             <tr>
@@ -29,4 +30,5 @@
             </div>
         </div>
     </div>
+
 {% endblock %}

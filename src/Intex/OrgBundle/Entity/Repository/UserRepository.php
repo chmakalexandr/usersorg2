@@ -28,7 +28,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
         $existingUsers = $db->getQuery()->getResult();
 
-        return $this->getDiffArraysUsers($users, $existingUsers);
+        return $this->getArrayDiffUsers($users, $existingUsers);
     }
 
     /**
@@ -37,13 +37,14 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      * @param ArrayCollection $existingUsers
      * @return array
      */
-    protected function getDiffArraysUsers($users, $existingUsers)
+    protected function getArrayDiffUsers(ArrayCollection$users, $existingUsers)
     {
         $usersInns = $this->getInn($users);
         $existingInns = $this->getInn($existingUsers);
 
         $newInns = array_diff($usersInns, $existingInns);
 
+        $newUsers = array();
         if ($newInns) {
             foreach ($users as $human) {
                 if (in_array($human->getInn(), $newInns)){
@@ -63,6 +64,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     protected function getInn($users)
     {
         $usersInns = array();
+
         foreach ($users as $human){
             $usersInns[] = $human->getInn();
         }

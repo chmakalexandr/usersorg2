@@ -121,9 +121,9 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
 
-            $this->addFlash('success', $this->get('translator')->trans('User was be added!'));
-
             $users = $company->getUsers();
+
+            $this->addFlash('success', $this->get('translator')->trans('User was be added!'));
             return $this->redirect($this->generateUrl('intex_org_company_users', array('companyId' => $companyId, 'company' => $company, 'users' => $users)));
         }
 
@@ -134,7 +134,7 @@ class UserController extends Controller
     }
 
     /**
-     * Load users with companies from XML file
+     * Load companies with users in DB from XML file
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -150,7 +150,8 @@ class UserController extends Controller
 
             foreach ($companies as $organization) {
                 if (!in_array($organization->getOgrn(), $existingOgrns)) {
-                    $em->persist($this->createNewCompany($organization));
+                    $company = $this->createNewCompany($organization);
+                    $em->persist($company);
                 } else {
                     $company = $this->getCompanyByOgrn($organization->getOgrn(), $existingCompanies);
                 }
@@ -231,6 +232,7 @@ class UserController extends Controller
     }
 
     /**
+     * Return companies from XML file
      * @param Request $request
      * @return mixed
      * @throws Exception
@@ -254,6 +256,7 @@ class UserController extends Controller
     }
 
     protected function createNewCompany($organization){
+
         $company = new Company();
         $company->setName($organization->getName());
         $company->setOgrn($organization->getOgrn());

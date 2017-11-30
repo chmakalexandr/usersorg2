@@ -45,6 +45,7 @@ class CompanyRepository extends \Doctrine\ORM\EntityRepository
     public function getOgrns($companies)
     {
         $ogrns = array();
+        
         foreach ($companies as $organization){
             $ogrns[] = $organization->getOgrn();
         }

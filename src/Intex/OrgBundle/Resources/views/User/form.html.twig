@@ -3,6 +3,11 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('build/form_style.css') }}">
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/form.js') }}"></script>
+{% endblock %}
+
 {% block namepage %}
     <h3>
         {% trans %} Add user to organization {% endtrans %}
@@ -11,7 +16,6 @@
 {% endblock %}
 
 {% block body %}
-    <script src="{{ asset('build/form.js') }}"></script>
 
     {{ form_start(form, { 'action': path('intex_org_user_create',{'companyId':company.id}), 'method': 'POST', 'attr': {'class': 'userform'} }) }}
     {{ form_widget(form) }}
@@ -19,7 +23,4 @@
         <input type="submit" value="{% trans %}Submit{% endtrans %}" class="btn btn-default">
     </p>
 
-    <script type="text/javascript">
-        $("#intex_orgbundle_usertype_bithday").datepicker({});
-    </script>
 {% endblock %}

@@ -1,4 +1,8 @@
 {% extends 'IntexOrgBundle::layout.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/check.js') }}"></script>
+{% endblock %}
 
 {% block namepage %}
     <h3>
@@ -7,9 +11,10 @@
 {% endblock %}
 
 {% block body %}
-    <script src="{{ asset('build/check.js') }}"></script>
+
     {{ form_start(form, { 'action': path('intex_org_user_load'), 'method': 'POST', 'attr': {'class': 'loadform'} }) }}
     {{ form_widget(form) }}
+
     <input type="submit" value="{% trans %}Upload Document{% endtrans %}" class="btn btn-default" id="up_submit" />
 
     {% for error_message in app.session.flashBag.get('error') %}

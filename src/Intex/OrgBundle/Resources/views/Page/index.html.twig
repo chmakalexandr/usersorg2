@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block body %}
+
     <div class="row">
         <div class="col-xs-6 col-md-3">
             <a href="{{ path('intex_org_users') }}" class="thumbnail">
@@ -32,16 +33,5 @@
         </div>
     </div>
 
-    {% for error_message in app.session.flashBag.get('error') %}
-        <div class="alert alert-danger" role="alert">
-            {{ error_message }}
-        </div>
-    {% endfor %}
-
-    {% for success_message in app.session.flashBag.get('success') %}
-        <div class="alert alert-success" role="alert">
-            {{ success_message }}
-        </div>
-    {% endfor %}
 {% endblock %}
 
