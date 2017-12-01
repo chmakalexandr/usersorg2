@@ -144,13 +144,14 @@ class UserController extends Controller
             $allUsersPresent = true;
             $em = $this->getDoctrine()->getManager();
 
-            $companies = $this->getCompaniesFromXml($request);
+            $companies = $this->getCompaniesFromXmlFile($request->files->get('form'));
             $existingCompanies = $em->getRepository('Intex\OrgBundle\Entity\Company')->getExistingCompanies($companies);
             $existingOgrns = $em->getRepository('Intex\OrgBundle\Entity\Company')->getOgrns($existingCompanies);
 
             foreach ($companies as $organization) {
+
                 if (!in_array($organization->getOgrn(), $existingOgrns)) {
-                    $company = $this->createNewCompany($organization);
+                    $company = new Company($organization->getName(), $organization->getOgrn(), $organization->getOktmo());
                     $em->persist($company);
                 } else {
                     $company = $this->getCompanyByOgrn($organization->getOgrn(), $existingCompanies);
@@ -158,6 +159,7 @@ class UserController extends Controller
 
                 $users = $organization->getUsers();
                 $newUsers = $em->getRepository('Intex\OrgBundle\Entity\User')->getNewUsers($users);
+
                 if (!empty($newUsers)) {
                     foreach ($newUsers as $user) {
                         $user->setCompany($company);
@@ -237,11 +239,9 @@ class UserController extends Controller
      * @return mixed
      * @throws Exception
      */
-    protected function getCompaniesFromXml(Request $request)
+    protected function getCompaniesFromXmlFile($xmlFile)
     {
         try {
-            $xmlFile = $request->files->get('form');
-
             if ((!$xmlFile)||$xmlFile['file']->getError()){
                 throw new Exception($this->get('translator')->trans('Error load file. Please check uploaded file'));
             }
@@ -253,15 +253,5 @@ class UserController extends Controller
         } catch (Exception $e) {
             throw new Exception($this->get('translator')->trans('Unnable add users in Db. Check XML file.'));
         }
-    }
-
-    protected function createNewCompany($organization){
-
-        $company = new Company();
-        $company->setName($organization->getName());
-        $company->setOgrn($organization->getOgrn());
-        $company->setOktmo($organization->getOktmo());
-
-        return $company;
     }
 }

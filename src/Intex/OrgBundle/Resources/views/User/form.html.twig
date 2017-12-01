@@ -1,8 +1,10 @@
 {% extends 'IntexOrgBundle::layout.html.twig' %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('build/form_style.css') }}">
 {% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('build/form.js') }}"></script>

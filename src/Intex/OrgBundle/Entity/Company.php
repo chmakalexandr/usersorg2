@@ -81,8 +81,14 @@ class Company
      */
     protected $users;
 
-    public function __construct()
+    public function __construct($name = null, $ogrn = null, $oktmo = null)
     {
+        if ($name && $ogrn && $oktmo){
+            $this->setName($name);
+            $this->setOgrn($ogrn);
+            $this->setOktmo($oktmo);
+        }
+
         $this->users = new ArrayCollection();
     }
 

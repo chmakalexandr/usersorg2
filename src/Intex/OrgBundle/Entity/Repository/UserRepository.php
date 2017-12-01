@@ -15,7 +15,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Return users from array $users that not exist in DB
      * @param ArrayCollection $users
-     * @return ArrayCollection
+     * @return array
      */
     public function getNewUsers(ArrayCollection $users)
     {
@@ -37,7 +37,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      * @param ArrayCollection $existingUsers
      * @return array
      */
-    protected function getArrayDiffUsers(ArrayCollection$users, $existingUsers)
+    protected function getArrayDiffUsers(ArrayCollection $users, $existingUsers)
     {
         $usersInns = $this->getInn($users);
         $existingInns = $this->getInn($existingUsers);

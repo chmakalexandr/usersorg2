@@ -6,3 +6,11 @@
         <a href="{{ path('intex_org_company_show', {'companyId': company.id}) }}">{{ company.name }}</a>
     </h3>
 {% endblock %}
+{% block body %}
+    {{ parent() }}
+    <div class="row">
+        <div class="list-group list-group-horizontal">
+             <a class="list-group-item" href="{{  path('intex_org_user_new',{ 'companyId': company.id })}}">{% trans %}Add user in company{% endtrans %}</a>
+        </div>
+    </div>
+{% endblock %}
