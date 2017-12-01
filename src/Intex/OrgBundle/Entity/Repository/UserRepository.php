@@ -45,6 +45,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $newInns = array_diff($usersInns, $existingInns);
 
         $newUsers = array();
+
         if ($newInns) {
             foreach ($users as $human) {
                 if (in_array($human->getInn(), $newInns)){

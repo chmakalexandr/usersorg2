@@ -127,6 +127,7 @@ class UserController extends Controller
             return $this->redirect($this->generateUrl('intex_org_company_users', array('companyId' => $companyId, 'company' => $company, 'users' => $users)));
         }
 
+        $this->addFlash('error', $this->get('translator')->trans('User can not be added'));
         return $this->render('IntexOrgBundle:User:form.html.twig', array(
             'company' => $company,
             'form' => $form->createView()
@@ -134,7 +135,7 @@ class UserController extends Controller
     }
 
     /**
-     * Load companies with users in DB from XML file
+     * Load companies with users from XML file
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -167,10 +168,11 @@ class UserController extends Controller
                     }
                     $allUsersPresent = false;
                 }
+
             }
             $em->flush();
         } catch (Exception $e) {
-            $this->addFlash('error', $this->get('translator')->trans('Unnable add users in Db. Check XML file.'));
+            $this->addFlash('error', $this->get('translator')->trans('Unnable add users in Db. Check XML file'));
             return $this->redirect($this->generateUrl('intex_org_user_upload'));
         }
 
