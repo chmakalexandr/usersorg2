@@ -15,6 +15,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Intex\OrgBundle\IntexOrgBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
+
         ];
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();

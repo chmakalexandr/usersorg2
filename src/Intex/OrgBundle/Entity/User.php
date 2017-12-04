@@ -95,7 +95,7 @@ class User
 
     /**
      * User's company
-     * @ORM\ManyToOne(targetEntity="Company", inversedBy="users")
+     * @ORM\ManyToOne(targetEntity="Company", inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      * @var \Intex\OrgBundle\Entity\Company
      */

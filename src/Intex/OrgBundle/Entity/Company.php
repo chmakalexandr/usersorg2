@@ -73,7 +73,7 @@ class Company
 
     /**
      * Users collection
-     * @ORM\OneToMany(targetEntity="User", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="User", mappedBy="company", cascade={"all"})
      * @JMS\Expose
      * @JMS\Type("ArrayCollection<Intex\OrgBundle\Entity\User>")
      * @JMS\XmlList(inline=true, entry="user")
@@ -81,14 +81,8 @@ class Company
      */
     protected $users;
 
-    public function __construct($name = null, $ogrn = null, $oktmo = null)
+    public function __construct()
     {
-        if ($name && $ogrn && $oktmo){
-            $this->setName($name);
-            $this->setOgrn($ogrn);
-            $this->setOktmo($oktmo);
-        }
-
         $this->users = new ArrayCollection();
     }
 
