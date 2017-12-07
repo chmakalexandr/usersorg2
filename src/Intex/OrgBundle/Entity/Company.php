@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alex
- * Date: 30.10.2017
- * Time: 10:57
- */
 
 namespace Intex\OrgBundle\Entity;
 

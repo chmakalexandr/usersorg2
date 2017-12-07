@@ -141,7 +141,6 @@ class UserController extends Controller
     public function loadUsersAction(Request $request)
     {
         try {
-            $allUsersPresent = true;
             $em = $this->getDoctrine()->getManager();
 
             $companies = $this->get('app.xmlfile_deserialize')->deserializeCompanies($request->files->get('form'));
@@ -149,11 +148,10 @@ class UserController extends Controller
             $existingOgrns = $em->getRepository('Intex\OrgBundle\Entity\Company')->getOgrns($existingCompanies);
 
             foreach ($companies as $organization) {
-                $company = $this->getOrganizationWithUsers($organization, $existingCompanies, $existingOgrns);
+                $company = $this->getNewOrganizationWithUsers($organization, $existingCompanies, $existingOgrns);
 
-                if ($company){
+                if ($company) {
                     $em->persist($company);
-                    $allUsersPresent = false;
                 }
             }
 
@@ -163,11 +161,7 @@ class UserController extends Controller
             return $this->redirect($this->generateUrl('intex_org_user_upload'));
         }
 
-        if ($allUsersPresent) {
-            $this->addFlash('warning', $this->get('translator')->trans('All uploadable users are present in DB'));
-        } else {
-            $this->addFlash('success', $this->get('translator')->trans('Users successfully loaded'));
-        }
+        $this->addFlash('success', $this->get('translator')->trans('Users successfully loaded'));
 
         return $this->redirect($this->generateUrl('intex_org_user_upload'));
     }
@@ -222,28 +216,29 @@ class UserController extends Controller
         return null;
     }
 
-    protected function getOrganizationWithUsers($organization, $existingCompanies, $existingOgrns)
+    protected function getNewOrganizationWithUsers($organization, $existingCompanies, $existingOgrns)
     {
         $em = $this->getDoctrine()->getManager();
-
-        if (!in_array($organization->getOgrn(), $existingOgrns)) {
-            $company = $organization;
-        } else {
-            $company = $this->getCompanyByOgrn($organization->getOgrn(), $existingCompanies);
-        }
 
         $users = $organization->getUsers();
         $newUsers = $em->getRepository('Intex\OrgBundle\Entity\User')->getNewUsers($users);
 
-        if (!empty($newUsers)) {
-            foreach ($newUsers as $user) {
-                $user->setCompany($company);
-                $company->addUser($user);
-            }
-        } else {
-            $company = null;
+        $ogrn = $organization->getOgrn();
+        if (in_array($ogrn, $existingOgrns)) {
+            $organization = $this->getCompanyByOgrn($ogrn, $existingCompanies);
         }
 
-        return $company;
+        if (!empty($newUsers)) {
+            foreach ($newUsers as $user) {
+                $user->setCompany($organization);
+                $organization->addUser($user);
+            }
+
+            if (!in_array($organization->getOgrn(), $existingOgrns)) {
+                return $organization;
+            }
+        }
+
+        return null;
     }
 }
