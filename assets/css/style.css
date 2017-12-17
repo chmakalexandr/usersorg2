@@ -159,3 +159,13 @@ a.thumbnail{
     padding-top: 2px;
     float: left;
 }
+
+.paginator .row{
+    display: flex;
+    justify-content: center;
+}
+.pagination > .active > a{
+    color: #fff !important;
+    background-color: #F48A00 !important;
+    border-color: #F48A00 !important;
+}

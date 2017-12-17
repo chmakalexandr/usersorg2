@@ -15,21 +15,27 @@ use Exception;
  */
 class UserController extends Controller
 {
-
+    const LIMIT_PER_PAGE = 5;
     /**
      * Render list all users
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listUsersAction()
+    public function listUsersAction($page = 1, $field = 'firstname', $order = 'ASC')
     {
         $em = $this->getDoctrine()
             ->getManager();
 
         $users = $em->getRepository('IntexOrgBundle:User')
-            ->findAll();
+            ->getAllUsers($field, $order, $page, self::LIMIT_PER_PAGE);
+
+        $maxPages = ceil($users->count() / self::LIMIT_PER_PAGE);
+        $thisPage = $page;
+        // Pass through the 3 above variables to calculate pages in twig
 
         return $this->render('IntexOrgBundle:User:index.html.twig', array(
-            'users' => $users
+            'users' => $users,
+            'maxPages' => $maxPages,
+            'thisPage' => $thisPage
         ));
     }
 
@@ -57,7 +63,7 @@ class UserController extends Controller
      * @param int $companyId Id organization's
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listOrgUsersAction($companyId)
+    public function listOrgUsersAction($companyId, $page = 1, $field = 'firstname', $order = 'ASC')
     {
         $company = $this->getCompany($companyId);
         $users = $company->getUsers();
@@ -66,9 +72,17 @@ class UserController extends Controller
             throw $this->createNotFoundException('Unable to find company.');
         }
 
+        $usersSort = $users->toArray();
+        $this->sortArrayByKey($usersSort, $field, $order);
+
+        $maxPages = ceil($users->count() / self::LIMIT_PER_PAGE);
+        $thisPage = $page;
+
         return $this->render('IntexOrgBundle:User:users.html.twig', array(
             'company' => $company,
-            'users' => $users
+            'users' =>   $usersSort,
+            'maxPages' => $maxPages,
+            'thisPage' => $thisPage
         ));
     }
 
@@ -122,8 +136,17 @@ class UserController extends Controller
 
             $users = $company->getUsers();
 
+            $maxPages = ceil($users->count() / self::LIMIT_PER_PAGE);
+            $thisPage = 1;
+
             $this->addFlash('success', $this->get('translator')->trans('User was be added!'));
-            return $this->redirect($this->generateUrl('intex_org_company_users', array('companyId' => $companyId, 'company' => $company, 'users' => $users)));
+            return $this->redirect($this->generateUrl('intex_org_company_users',
+                array('companyId' => $companyId,
+                      'company' => $company,
+                      'users' => $users,
+                      'maxPages' => $maxPages,
+                      'thisPage' => $thisPage
+                    )));
         }
 
         $this->addFlash('error', $this->get('translator')->trans('User can not be added'));
@@ -142,8 +165,8 @@ class UserController extends Controller
     {
         try {
             $em = $this->getDoctrine()->getManager();
-
-            $companies = $this->get('app.xmlfile_deserialize')->deserializeCompanies($request->files->get('form'));
+            $file = $request->files->get('form');
+            $companies = $this->get('app.xmlfile_deserialize')->deserializeCompanies($file);
             $existingCompanies = $em->getRepository('Intex\OrgBundle\Entity\Company')->getExistingCompanies($companies);
             $existingOgrns = $em->getRepository('Intex\OrgBundle\Entity\Company')->getOgrns($existingCompanies);
 
@@ -157,7 +180,7 @@ class UserController extends Controller
 
             $em->flush();
         } catch (Exception $e) {
-            $this->addFlash('error', $this->get('translator')->trans('Unnable add users in Db. Check XML file'.$e));
+            $this->addFlash('error', $this->get('translator')->trans('Unnable add users in Db. Check XML file'));
             return $this->redirect($this->generateUrl('intex_org_user_upload'));
         }
 
@@ -240,5 +263,20 @@ class UserController extends Controller
         }
 
         return null;
+    }
+
+
+    private function sortArrayByKey(&$array,$key,$order){
+       usort($array,function ($a, $b) use(&$key,&$order)
+            {
+
+                if($order == 'ASC') {
+                    return (strtolower($a->{$key}) < strtolower($b->{$key})) ? -1 : 1;
+                } else {
+                    return (strtolower($a->{$key}) > strtolower($b->{$key})) ? -1 : 1;
+                }
+                if(strcmp(strtolower($a->{$key}), strtolower($b->{$key}))){ return 0;}
+            });
+
     }
 }

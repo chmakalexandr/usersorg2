@@ -12,16 +12,31 @@ intex_org_user_show:
         userId:   \d+
 
 intex_org_users:
-    path: /users/
-    defaults: { _controller: IntexOrgBundle:User:listUsers, _locale: %locale% }
+    path: /users/{page}/{field}/{order}
+    defaults: { _controller: IntexOrgBundle:User:listUsers, _locale: %locale%, page: 1, field: firstname, order: ASC }
     requirements:
         methods:  GET
 
-intex_org_companies:
-    path: /companies/
-    defaults: { _controller: IntexOrgBundle:Company:listCompanies, _locale: %locale% }
+
+intex_org_users_page:
+    path: /users/page/{page}/{field}/{order}
+    defaults: { _controller: IntexOrgBundle:User:listUsers, _locale: %locale%, page: 1,field: firstname, order: ASC }
     requirements:
         methods:  GET
+        page: \d+
+
+intex_org_companies:
+    path: /companies/{page}/{field}/{order}
+    defaults: { _controller: IntexOrgBundle:Company:listCompanies, _locale: %locale%, page: 1,field: name, order: ASC  }
+    requirements:
+        methods:  GET
+
+intex_org_companies_page:
+    path: /companies/page/{page}/{field}/{order}
+    defaults: { _controller: IntexOrgBundle:Company:listCompanies, _locale: %locale%, page: 1, field: name, order: ASC }
+    requirements:
+        methods:  GET
+        page: \d+
 
 intex_org_company_show:
     path: /company/{companyId}
@@ -31,8 +46,8 @@ intex_org_company_show:
         companyId: \d+
 
 intex_org_company_users:
-    path: /users-company/{companyId}
-    defaults: { _controller: IntexOrgBundle:User:listOrgUsers, _locale: %locale% }
+    path: /users-company/{companyId}/{page}/{field}/{order}
+    defaults: { _controller: IntexOrgBundle:User:listOrgUsers, _locale: %locale%, page: 1,field: firstname, order: ASC }
     requirements:
         methods:  GET
         companyId: \d+

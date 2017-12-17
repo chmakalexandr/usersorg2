@@ -3,6 +3,7 @@
 namespace Intex\OrgBundle\Entity\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * CompanyRepository
@@ -12,17 +13,28 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class CompanyRepository extends \Doctrine\ORM\EntityRepository
 {
+    private $fieldSorting = array('name','ogrn','oktmo');
 
     /**
      * @return array
      */
-    public function getAllCompanies()
+    public function getAllCompanies($field = 'name',$order = 'ASC',$currentPage = 1, $limit = 5)
     {
-        $qb = $this->createQueryBuilder('c')
-            ->select('c')
-            ->addOrderBy('c.name', 'ASC');
+        if (in_array($field, $this->fieldSorting)) {
+            $field = 'c.' . $field;
+            $qb = $this->createQueryBuilder('c')
+                ->select('c')
+                ->addOrderBy($field, $order);
 
-        return $qb->getQuery()->getResult();
+            $paginator = new Paginator($qb);
+
+            $paginator->getQuery()
+                ->setFirstResult($limit * ($currentPage - 1))// Offset
+                ->setMaxResults($limit); // Limit
+
+            return $paginator;
+        }
+        return null;
     }
 
      /**

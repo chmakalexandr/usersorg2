@@ -3,6 +3,7 @@
 namespace Intex\OrgBundle\Entity\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * UserRepository
@@ -12,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    private $fieldSorting = array('firstname','lastname','middlename');
     /**
      * Return users from array $users that not exist in DB
      * @param ArrayCollection $users
@@ -29,6 +31,30 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         $existingUsers = $db->getQuery()->getResult();
 
         return $this->getArrayDiffUsers($users, $existingUsers);
+    }
+
+
+    public function getAllUsers($field = 'firstname',$order = 'ASC',$currentPage = 1, $limit = 5)
+    {
+        // Create our query
+        if (in_array($field, $this->fieldSorting)) {
+            $field = 'u.' . $field;
+
+            $query = $this->createQueryBuilder('u')
+                ->orderBy($field, $order)
+                ->getQuery();
+
+            // No need to manually get get the result ($query->getResult())
+
+            $paginator = new Paginator($query);
+
+            $paginator->getQuery()
+                ->setFirstResult($limit * ($currentPage - 1))// Offset
+                ->setMaxResults($limit); // Limit
+
+            return $paginator;
+        }
+        return null;
     }
 
     /**
@@ -72,4 +98,6 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
         return $usersInns;
     }
+
+
 }

@@ -19,3 +19,4 @@ services:
         public: true
         arguments:
             - '@jms_serializer'
+            - '@translator'

@@ -10,17 +10,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  */
 class CompanyController extends Controller
 {
+    const LIMIT_PER_PAGE = 5;
     /**
      * Render list all companies
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listCompaniesAction()
+    public function listCompaniesAction($page = 1, $field = 'name', $order = 'ASC')
     {
         $em = $this->getDoctrine()->getManager();
-        $companies = $em->getRepository('IntexOrgBundle:Company')->findAll();
+        $companies = $em->getRepository('IntexOrgBundle:Company')->getAllCompanies($field, $order, $page, self::LIMIT_PER_PAGE);
+
+
+        $maxPages = ceil($companies->count() / self::LIMIT_PER_PAGE);
+        $thisPage = $page;
 
         return $this->render('IntexOrgBundle:Company:index.html.twig', array(
-            'companies' => $companies
+            'companies' => $companies,
+            'maxPages' => $maxPages,
+            'thisPage' => $thisPage
         ));
     }
 
